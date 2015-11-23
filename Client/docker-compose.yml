@@ -1,8 +1,8 @@
 client:
-  build: .
   container_name: client
   links:
    - redis_ambassador:redis
+  image: relateiq/redis-cli
 redis_ambassador:
   container_name: redis_ambassador
   expose:

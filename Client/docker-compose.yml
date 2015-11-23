@@ -1,0 +1,13 @@
+client:
+  build: .
+  container_name: client
+  links:
+   - redis_ambassador:redis
+redis_ambassador:
+  container_name: redis_ambassador
+  expose:
+   - "6379"
+  environment:
+   - REDIS_PORT_6379_TCP=tcp://192.168.33.10:6379
+  image: svendowideit/ambassador
+

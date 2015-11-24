@@ -65,6 +65,8 @@ these two containers and open a `redis-cli` for communicating with the redis-ser
 It works like this:
 ![image](pics/ambassador.gif)
 ##Docker Deploy
+[Demo](https://drive.google.com/file/d/0B87f7178bIHnZmI4NngzbUFYOXc/view?usp=sharing) of the deploy process. 
+
 In this part, I use a `post-commit` hook to trigger the build container, and use `post-receive` hook for deploying the app to blue and green slice. 
 The total structure is like this:
 ```
@@ -129,4 +131,3 @@ Thus, the whole deployment procedure works like this:
 1. Perfomr a `git commit` then it will trigger the `post-commit` hook, it will build the app and push to the local registry.
 2. `git push` to the blue or green repository, it will trigger the `post-receive` hook in the target repo, and deploy the corresponding app.
 
-This is a [demo](https://drive.google.com/file/d/0B87f7178bIHnZmI4NngzbUFYOXc/view?usp=sharing) of the whole process. 

@@ -127,4 +127,6 @@ docker run -p 3002:8080 -d --name app-green localhost:5000/hw4-app:latest
 
 Thus, the whole deployment procedure works like this:
 1. Perfomr a `git commit` then it will trigger the `post-commit` hook, it will build the app and push to the local registry.
-2. `git push` to the blue or green repository, it will trigger the `post-receive` hook in the target repo, and deploy the corresponding app. 
+2. `git push` to the blue or green repository, it will trigger the `post-receive` hook in the target repo, and deploy the corresponding app.
+
+This is a [demo](https://drive.google.com/file/d/0B87f7178bIHnZmI4NngzbUFYOXc/view?usp=sharing) of the whole process. 

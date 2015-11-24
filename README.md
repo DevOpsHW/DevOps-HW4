@@ -93,7 +93,7 @@ docker build -t hw4-app .
 echo "---------------------Run app----------------------"
 docker stop hw4-app
 docker rm hw4-app
-docker run -p 3000:8080 -d --name app hw4-app
+docker run -p 3000:8080 -d --name hw4-app hw4-app
 
 echo "-----------------Push to registry-----------------"
 docker tag -f hw4-app localhost:5000/hw4-app:latest

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "------------------deploy to blue slice----------------"
+echo "------------------deploy to green slice----------------"
 docker pull localhost:5000/hw4:latest  
 docker stop app-green  
 docker rm app-green

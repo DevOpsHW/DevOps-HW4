@@ -59,3 +59,63 @@ and a client which need to get access to the redis-server in HOST 1. And using t
 these two containers and open a `redis-cli` for communicating with the redis-server in HOST 1.
 ##Docker Deploy
 In this part, I use a `post-commit` hook to trigger the build container, and use `post-receive` hook for deploying the app to blue and green slice. 
+The total structure is like this:
+```
+- Deploy/
+      - App/
+	  - blue.git/
+	  - green.git/
+	  - Dockerfile
+```
+
+In `blue.git` and `green.git`, initiate a bare repository by command `git init --bare`. Use these two commands:
+```
+git remote add blue Deploy/blue.git
+git remote add green Deploy/green.git
+``` 
+to add the blue and green repositoreis as the remote of the original git repository. 
+
+And in the original git repository, use a `post-commit` hook to do the build docker and push to local registry:
+```
+#!/bin/bash
+
+echo "-----------------Build Dockerfile-----------------"
+cd Deploy
+docker build -t hw4-app .
+
+echo "---------------------Run app----------------------"
+docker run -p 3000:8080 -d --name app hw4-app
+
+echo "-----------------Push to registry-----------------"
+docker tag hw4-app localhost:5000/hw4:latest
+docker push localhost:5000/hw4:latest
+```
+
+Then, in the blue and green repository, use a `post-receive` hook to do the pull from registry and launch the corresponding apps:
+```
+post-receive in blue.git
+
+#!/bin/bash
+echo "------------------deploy to blue slice----------------"
+docker pull localhost:5000/hw4:latest
+docker stop app-blue
+docker rm app-blue
+docker rmi localhost:5000/hw4:current
+docker tag localhost:5000/hw4:latest localhost:5000/hw4:current
+docker run -p 3001:8080 -d --name app-blue localhost:5000/hw4:latest
+
+post-receive in green.git
+
+#!/bin/bash
+echo "------------------deploy to green slice----------------"
+docker pull localhost:5000/hw4:latest
+docker stop app-green
+docker rm app-green
+docker rmi localhost:5000/hw4:current
+docker tag localhost:5000/hw4:latest localhost:5000/hw4:current
+docker run -p 3002:8080 -d --name app-green localhost:5000/hw4:latest
+```
+
+Thus, the whole deployment procedure works like this:
+1. Perfomr a `git commit` then it will trigger the `post-commit` hook, it will build the app and push to the local registry.
+2. `git push` to the blue or green repository, it will trigger the `post-receive` hook in the target repo, and deploy the corresponding app. 

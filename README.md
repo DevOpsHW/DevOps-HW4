@@ -91,11 +91,13 @@ cd Deploy
 docker build -t hw4-app .
 
 echo "---------------------Run app----------------------"
+docker stop hw4-app
+docker rm hw4-app
 docker run -p 3000:8080 -d --name app hw4-app
 
 echo "-----------------Push to registry-----------------"
-docker tag hw4-app localhost:5000/hw4:latest
-docker push localhost:5000/hw4:latest
+docker tag -f hw4-app localhost:5000/hw4-app:latest
+docker push localhost:5000/hw4-app:latest
 ```
 
 Then, in the blue and green repository, use a `post-receive` hook to do the pull from registry and launch the corresponding apps:
@@ -104,23 +106,23 @@ post-receive in blue.git
 
 #!/bin/bash
 echo "------------------deploy to blue slice----------------"
-docker pull localhost:5000/hw4:latest
+docker pull localhost:5000/hw4-app:latest
 docker stop app-blue
 docker rm app-blue
-docker rmi localhost:5000/hw4:current
-docker tag localhost:5000/hw4:latest localhost:5000/hw4:current
-docker run -p 3001:8080 -d --name app-blue localhost:5000/hw4:latest
+docker rmi localhost:5000/hw4-app:current
+docker tag localhost:5000/hw4-app:latest localhost:5000/hw4-app:current
+docker run -p 3001:8080 -d --name app-blue localhost:5000/hw4-app:latest
 
 post-receive in green.git
 
 #!/bin/bash
 echo "------------------deploy to green slice----------------"
-docker pull localhost:5000/hw4:latest
+docker pull localhost:5000/hw4-app:latest
 docker stop app-green
 docker rm app-green
-docker rmi localhost:5000/hw4:current
-docker tag localhost:5000/hw4:latest localhost:5000/hw4:current
-docker run -p 3002:8080 -d --name app-green localhost:5000/hw4:latest
+docker rmi localhost:5000/hw4-app:current
+docker tag localhost:5000/hw4-app:latest localhost:5000/hw4-app:current
+docker run -p 3002:8080 -d --name app-green localhost:5000/hw4-app:latest
 ```
 
 Thus, the whole deployment procedure works like this:

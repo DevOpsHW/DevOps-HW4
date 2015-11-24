@@ -7,7 +7,7 @@ var PORT = args[0];
 
 app.get('/', function(req, res) 
 {
-	res.send("Hello, this is green slice");
+	res.send("Hello, this is blue slice");
 });
 
 var server = app.listen(PORT, function () {

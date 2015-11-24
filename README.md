@@ -32,6 +32,10 @@ docker run -it --rm --name getfile --link sendfile:sendfile getfile
 As runing container with command `--link`, it will automatically set the `/etc/hosts` file, so in the `curl` command 
 we can use `sendfile` to replace the IP address. In this way, the `getfile` container will print out the content of the text file 
 `foo.txt` in the `sendfile` container.
+
+It should work like this:
+![image](pics/fileio.gif)
+
 ##Ambassador pattern
 In this part, I used 4 containers in total, they have a structure like this:
 ![image](pics/ambassador.png)
@@ -57,6 +61,9 @@ redis:
 In `HOST 2`, also use a `docker-compose.yml` to generate required contaniers. Here I have a redis-ambassador 
 and a client which need to get access to the redis-server in HOST 1. And using the command `docker-compose run client` to launch 
 these two containers and open a `redis-cli` for communicating with the redis-server in HOST 1.
+
+It works like this:
+![image](pics/ambassador.gif)
 ##Docker Deploy
 In this part, I use a `post-commit` hook to trigger the build container, and use `post-receive` hook for deploying the app to blue and green slice. 
 The total structure is like this:
